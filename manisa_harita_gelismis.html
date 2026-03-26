@@ -1,151 +1,482 @@
-
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Manisa İlçe Haritası</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans,sans-serif);color:var(--color-text-primary)}
-.wrap{display:flex;flex-direction:column;gap:0;padding:12px}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;background:var(--color-background-secondary);border-radius:10px 10px 0 0;border:0.5px solid var(--color-border-tertiary)}
-.toolbar input[type=text]{font-size:15px;font-weight:500;border:none;background:transparent;color:var(--color-text-primary);outline:none;min-width:180px;flex:1}
-.toolbar input[type=text]::placeholder{color:var(--color-text-tertiary)}
-.sep{width:0.5px;height:24px;background:var(--color-border-secondary);flex-shrink:0}
-.tbtn{font-size:12px;padding:4px 10px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);white-space:nowrap}
-.tbtn:hover{background:var(--color-background-tertiary)}
-.tbtn.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info)}
-.main{display:flex;gap:0;border:0.5px solid var(--color-border-tertiary);border-top:none;border-radius:0 0 10px 10px;overflow:hidden}
-.map-area{flex:1;min-width:0;background:var(--color-background-primary);padding:8px}
-.panel{width:220px;flex-shrink:0;border-left:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);display:flex;flex-direction:column;overflow:hidden}
-.panel-tab{display:flex;border-bottom:0.5px solid var(--color-border-tertiary)}
-.ptab{flex:1;font-size:11px;padding:7px 4px;text-align:center;cursor:pointer;color:var(--color-text-secondary);border:none;background:transparent;font-family:inherit}
-.ptab.active{color:var(--color-text-primary);font-weight:500;background:var(--color-background-primary);border-bottom:2px solid var(--color-text-primary)}
-.panel-body{flex:1;padding:10px;overflow-y:auto}
-.sec-label{font-size:10px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em}
-.color-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:12px}
-.cbtn{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform 0.1s}
-.cbtn:hover{transform:scale(1.2)}
-.cbtn.active{border-color:var(--color-text-primary);transform:scale(1.15)}
-.dist-list{display:flex;flex-direction:column;gap:3px}
-.ditem{display:flex;align-items:center;gap:7px;font-size:11px;cursor:pointer;padding:4px 6px;border-radius:6px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
-.ditem:hover{background:var(--color-background-tertiary)}
-.ddot{width:12px;height:12px;border-radius:3px;flex-shrink:0;border:1px solid rgba(128,128,128,0.2)}
-.legend-list{display:flex;flex-direction:column;gap:6px}
-.legend-item{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:6px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary)}
-.legend-swatch{width:16px;height:16px;border-radius:4px;flex-shrink:0;border:1px solid rgba(128,128,128,0.2)}
-.legend-input{font-size:11px;border:none;background:transparent;color:var(--color-text-primary);outline:none;flex:1;min-width:0}
-.legend-del{font-size:14px;cursor:pointer;color:var(--color-text-tertiary);line-height:1;padding:0 2px}
-.legend-del:hover{color:var(--color-text-primary)}
-.add-legend-row{display:flex;gap:6px;margin-top:8px}
-.add-legend-input{flex:1;font-size:11px;padding:4px 8px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary)}
-.add-legend-btn{font-size:11px;padding:4px 8px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary)}
-.add-legend-btn:hover{background:var(--color-background-tertiary)}
-.reset-btn{width:100%;font-size:11px;padding:5px;margin-top:8px;cursor:pointer;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:6px;color:var(--color-text-secondary)}
-.reset-btn:hover{background:var(--color-background-tertiary)}
-.tip{font-size:10px;color:var(--color-text-tertiary);margin-top:8px;line-height:1.5}
-.legend-preview{margin-top:12px;padding:10px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;background:var(--color-background-primary)}
-.legend-preview-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px}
-.ilce-path{cursor:pointer;transition:opacity 0.12s}
-.ilce-path:hover{opacity:0.75}
-svg text{pointer-events:none;user-select:none}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f13;
+  --surface:#1a1a22;
+  --surface2:#22222d;
+  --border:#2e2e3e;
+  --accent:#6c63ff;
+  --accent2:#ff6584;
+  --text:#e8e8f0;
+  --muted:#7a7a9a;
+  --radius:14px;
+  --panel-w:300px;
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  z-index:10;
+}
+.topbar-title{
+  flex:1;
+  font-family:'Syne',sans-serif;
+  font-size:18px;font-weight:700;
+  color:var(--text);
+  background:transparent;border:none;outline:none;
+  min-width:0;
+}
+.topbar-title::placeholder{color:var(--muted)}
+
+.tbtn{
+  flex-shrink:0;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;
+  padding:8px 12px;border-radius:9px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--muted);cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.tbtn:hover{border-color:var(--accent);color:var(--text)}
+.tbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tbtn.dl{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;border:none}
+.tbtn.dl:hover{opacity:.9}
+
+/* ── BODY LAYOUT ── */
+.app-body{
+  display:flex;
+  flex:1;
+  overflow:hidden;
+}
+
+/* ── MAP AREA ── */
+.map-wrap{
+  flex:1;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  background:var(--bg);
+}
+
+#export-area{
+  background:#fff;
+  border-radius:var(--radius);
+  padding:18px;
+  width:100%;
+  max-width:600px;
+}
+#mapTitleDisplay{
+  font-family:'Syne',sans-serif;
+  font-size:18px;font-weight:800;
+  text-align:center;
+  color:#1a1a2e;
+  margin-bottom:12px;
+  min-height:22px;
+}
+
+#manisa-map{width:100%;height:auto;display:block}
+
+.ilce-path{cursor:pointer;transition:filter .15s}
+.ilce-path:hover{filter:brightness(.85)}
+
+/* Legend on map */
+.map-legend{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid #e0e0e0;
+  display:flex;flex-wrap:wrap;gap:10px;
+}
+.map-legend-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;color:#333;
+  font-family:'DM Sans',sans-serif;
+}
+.map-legend-swatch{
+  width:12px;height:12px;border-radius:3px;flex-shrink:0;
+}
+
+/* ── SIDE PANEL ── */
+.side-panel{
+  width:var(--panel-w);
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+  overflow:hidden;
+}
+
+/* tabs */
+.panel-tabs{
+  display:flex;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.ptab{
+  flex:1;padding:13px 4px;
+  font-family:'Syne',sans-serif;
+  font-size:12px;font-weight:700;
+  text-align:center;
+  border:none;background:transparent;
+  color:var(--muted);cursor:pointer;
+  transition:color .2s;
+  border-bottom:3px solid transparent;
+}
+.ptab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.panel-body{
+  flex:1;overflow-y:auto;padding:16px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+.sec-label{
+  font-size:10px;font-weight:700;
+  color:var(--muted);letter-spacing:1px;
+  text-transform:uppercase;
+  margin:14px 0 8px;
+}
+.sec-label:first-child{margin-top:0}
+
+/* Color grid */
+.color-grid{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:6px;
+}
+.cbtn{
+  aspect-ratio:1;border-radius:7px;cursor:pointer;
+  border:2px solid transparent;
+  transition:transform .12s,border-color .12s;
+}
+.cbtn:hover{transform:scale(1.1)}
+.cbtn.active{border-color:#fff;transform:scale(1.12);box-shadow:0 0 10px rgba(255,255,255,.3)}
+
+/* Custom color */
+.custom-row{
+  display:flex;align-items:center;gap:10px;margin-top:4px;
+}
+#customColor{
+  width:44px;height:40px;
+  border:1px solid var(--border);
+  border-radius:9px;cursor:pointer;
+  background:transparent;padding:2px;
+}
+.hex-val{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--accent)}
+.use-custom-btn{
+  margin-left:auto;font-size:11px;padding:6px 10px;
+  border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-weight:600;
+  transition:all .2s;
+}
+.use-custom-btn:hover{border-color:var(--accent);color:var(--accent)}
+.use-custom-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* District list */
+.dist-list{display:flex;flex-direction:column;gap:5px}
+.ditem{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 11px;border-radius:10px;
+  background:var(--surface2);
+  border:1px solid transparent;
+  cursor:pointer;font-size:13px;
+  transition:border-color .15s;
+}
+.ditem:hover{border-color:var(--accent)}
+.ditem-swatch{
+  width:14px;height:14px;border-radius:4px;flex-shrink:0;
+  border:1px solid rgba(255,255,255,.1);
+}
+.ditem-name{flex:1;font-weight:500}
+
+/* Legend tab */
+.legend-items{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.legend-item{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 11px;border-radius:10px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+}
+.legend-swatch{
+  width:18px;height:18px;border-radius:5px;flex-shrink:0;
+  cursor:pointer;border:2px solid transparent;
+  transition:border-color .15s;
+}
+.legend-swatch:hover{border-color:#fff}
+.legend-label-input{
+  flex:1;background:transparent;border:none;
+  color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;outline:none;
+  min-width:0;
+}
+.legend-label-input::placeholder{color:var(--muted)}
+.legend-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:16px;padding:2px 4px;
+  border-radius:5px;transition:color .15s;
+}
+.legend-del:hover{color:var(--accent2)}
+
+.legend-add-row{display:flex;flex-direction:column;gap:8px}
+.legend-new-label{
+  padding:10px 12px;border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:13px;outline:none;
+  transition:border-color .2s;
+}
+.legend-new-label:focus{border-color:var(--accent)}
+.legend-new-label::placeholder{color:var(--muted)}
+.legend-add-btn{
+  padding:10px;border-radius:10px;
+  border:none;background:var(--accent);
+  color:#fff;font-family:'Syne',sans-serif;
+  font-weight:700;font-size:13px;cursor:pointer;
+  transition:opacity .2s;
+}
+.legend-add-btn:hover{opacity:.85}
+
+.legend-preview-label{
+  font-size:10px;font-weight:700;color:var(--muted);
+  letter-spacing:1px;text-transform:uppercase;
+  margin:16px 0 8px;
+}
+.legend-preview{
+  background:var(--surface2);border-radius:10px;
+  padding:12px;border:1px solid var(--border);
+  display:flex;flex-wrap:wrap;gap:10px;
+  min-height:40px;
+}
+.legend-preview-item{
+  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+}
+.legend-preview-swatch{
+  width:12px;height:12px;border-radius:3px;flex-shrink:0;
+}
+
+/* color-picker popover for legend swatch */
+.swatch-picker{
+  position:absolute;z-index:999;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
+  width:200px;
+}
+.swatch-picker-grid{
+  display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:8px;
+}
+.swatch-cbtn{
+  aspect-ratio:1;border-radius:5px;cursor:pointer;
+  border:2px solid transparent;transition:transform .1s;
+}
+.swatch-cbtn:hover{transform:scale(1.12)}
+.swatch-cbtn.active{border-color:#fff}
+.swatch-custom-row{display:flex;align-items:center;gap:6px}
+.swatch-custom-row input[type=color]{
+  width:34px;height:30px;border:none;
+  border-radius:7px;cursor:pointer;background:transparent;
+  padding:1px;border:1px solid var(--border);
+}
+.swatch-apply{
+  flex:1;padding:6px;border-radius:7px;border:none;
+  background:var(--accent);color:#fff;
+  font-size:11px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav{
+  display:none;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.bottom-nav-tabs{
+  display:flex;
+}
+.bnav-tab{
+  flex:1;padding:12px 4px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  border:none;background:transparent;color:var(--muted);
+  cursor:pointer;font-family:'Syne',sans-serif;
+  font-size:10px;font-weight:700;
+  transition:color .2s;
+}
+.bnav-tab svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.bnav-tab.active{color:var(--accent)}
+
+/* Mobile sheet */
+.mobile-sheet{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  border-radius:20px 20px 0 0;
+  z-index:100;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  max-height:70vh;
+  flex-direction:column;
+}
+.mobile-sheet.open{transform:translateY(0)}
+.sheet-handle{
+  width:36px;height:4px;border-radius:2px;
+  background:var(--border);margin:10px auto 6px;flex-shrink:0;
+}
+.sheet-body{overflow-y:auto;padding:12px 16px 30px;flex:1}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px){
+  html,body{overflow:hidden}
+  .side-panel{display:none}
+  .map-wrap{padding:10px;justify-content:flex-start;overflow-y:auto;padding-bottom:80px}
+  #export-area{max-width:100%;border-radius:12px;padding:12px}
+  .bottom-nav{display:flex;flex-direction:column}
+  .mobile-sheet{display:flex}
+  body{overflow:hidden}
+}
+@media (max-width:400px){
+  .topbar-title{font-size:15px}
+  .tbtn{font-size:11px;padding:7px 9px}
+}
 </style>
+</head>
+<body>
 
-<div class="wrap">
-  <div class="toolbar">
-    <input type="text" id="mapTitle" placeholder="Harita başlığı girin..." value="Manisa İlçe Haritası" />
-    <div class="sep"></div>
-    <button class="tbtn active" id="btnLabels" onclick="toggleLabels()">Yazılar</button>
-    <button class="tbtn" id="btnBorder" onclick="toggleBorders()">Sınırlar</button>
-    <div class="sep"></div>
-    <button class="tbtn" onclick="resetAll()">Sıfırla</button>
-  </div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <input class="topbar-title" id="mapTitle" type="text" value="Manisa İlçe Haritası" placeholder="Harita Başlığı..."/>
+  <button class="tbtn active" id="btnLabels" onclick="toggleLabels()">Yazılar</button>
+  <button class="tbtn active" id="btnBorder" onclick="toggleBorders()">Sınırlar</button>
+  <button class="tbtn dl" onclick="downloadMap()">↓ PNG</button>
+</div>
 
-  <div class="main">
-    <div class="map-area">
-      <div id="mapTitleDisplay" style="font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:center;margin-bottom:6px;padding:0 4px"></div>
-      <svg id="manisa-map" viewBox="0 0 310 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
-        <path id="akhisar" class="ilce-path" data-name="AKHİSAR" d="M153.9,131.4c1.4-1.5,2.7-3.2,4.5-4.3c1.6-1,3.5-1.3,5.2-2.2c3.3-1.8,4.9-5.1,5.6-8.7c0.7-3.7,2.7-7.3,2.9-11.1c0.1-1.9-0.3-3.8-0.4-5.7c-0.1-1.9,0.7-4.1,0.3-6c-0.7-3.3-4.4-3.5-6.6-5.4c-3-2.5-4.1-6.7-5.4-10.2c-1.3-3.6-3.3-6.1-6.1-8.6c-3-2.7-5.1-6.2-7.9-9.1c-1.1,1.7-2.7,3-4,4.6c-1.5,1.7-2.6,3.7-4.1,5.4c-1.4,1.6-3.2,2.8-4.3,4.6c-1.1,1.9-1.2,4.1-2.2,6c-0.9,1.6-2.4,2.4-3.7,3.6c-1.6,1.4-1.9,3.5-3.3,5.1c-2.4,2.7-8.3,1.3-11.5,1.5c-8.2,0.5-15,8.6-23.5,4.7c-2.7-1.2-4.8-4.1-8-4.3c-1.8-0.1-3.5,0.7-5.3,0.9c-2,0.2-4.2,0.2-6,1.1c-1.6,0.8-2.1,2.2-2.9,3.8c-1,2-2.1,3.8-2.9,5.9c-1.6,4-0.5,5.4,2.3,8.4c2.8,3,4.3,6.9,7,9.9c2.7,3.1,6.4,5,10.3,6.3c4.1,1.4,8.9,1,12.7,3c3.2,1.7,4.6,5.2,5.8,8.4c0.7,1.8,1.2,3.9,2.4,5.5c1.3,1.6,3.3,2.1,5,3c3.8,2,6.6,5.4,10.4,7.3c4.2,2.1,8.9,0.2,12.9-1.3c2.4-0.9,4.7-1.7,7.3-2c2.4-0.3,4.8-0.2,6.9-1.6c3.2-2.2,4.5-6.8,4.6-10.5c0.1-2-0.5-4.1,0.6-5.9Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="demirci" class="ilce-path" data-name="DEMİRCİ" d="M259.3,144.7c1.3-1.3,2.8-2.9,4.8-2.9c1.6,0,3,1.3,4.6,1c2-0.4,2.1-2.5,3-3.9c1-1.5,2.7-2,4.3-2.6c1.8-0.6,3.8-1.3,5.8-1c1.7,0.3,3.1,1.6,5,1.1c1.7-0.5,2.8-2.3,4.3-3.2c1.7-1,3.8-1.4,5.7-1.7c-1.2-3.4-5.4-5.6-5.1-9.6c0.2-2.2,1.9-3.5,2.7-5.5c0.8-2.1-0.1-3.9-1.3-5.6c-1.3-2-2.4-4.1-3.9-6c-1.5-1.8-3.6-2.9-5.5-4.2c-1.9-1.3-3.6-3-5.5-4.3c-2.1-1.4-4.6-2-7-2.6c-4.8-1.3-10.6-1.9-14.8-4.6c-1.6-1.1-3.7-2.3-4.9-3.8c-1.6-2.1-0.3-3.7-0.3-6c0-4.4-5.1-2.8-7.5-1.7c-3.7,1.6-7.2,3.1-11,4.4c-2.9,1-10.6,3.3-7.5,7.5c1.2,1.6,2.1,2.7,2.1,4.8c0.1,2.2-0.6,4.4-1.3,6.5c-1.4,4.5-3.1,8.7-5.6,12.8c-1.2,2-2.5,3.9-3.3,6.1c-0.8,2.4-0.9,5-1.5,7.5c-0.6,2.2-1.5,4.3-2.6,6.2c-1.1,1.8-2.6,3.4-3.4,5.3c-1.8,4.4,2.5,6,5.6,8c4.6,3,3.1,6.5,0.9,10.6c-1.1,2.1-1.8,4-2,6.4c-0.1,2.4-0.6,5.5,0,7.9c1.2,5.1,9,1.5,12,0.4c5.7-2,11.7-3.4,17.4-5.6c4.2-1.7,9.5-3.9,11-8.7c0.8-2.6,0.2-5.5,1.3-8c1-2.1,3.1-3.5,4.2-5.6Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="selendi" class="ilce-path" data-name="SELENDİ" d="M316.5,154.7c1.5-1.5,4.4-3.1,5.1-5.2c1.2-3.8-6.5-0.9-7.8-0.6c-4.3,0.9-9.5-0.7-12.2-4.3c-1.1-1.4-1.7-2.9-2-4.6c-0.3-1.6-0.2-3.7-1.4-5.1c-2.9-3.1-7.2,1.4-9.7,2.8c-3.9,2.1-7.8-0.7-11.8,0.1c-3.9,0.8-3.6,4.6-6.5,6.4c-1.7,1.1-3.6,0.2-5.4,0.1c-2.3-0.1-4.1,1.3-5.5,3c-3.2,4-2.3,9.1-4.6,13.4c-1.3,2.3-3.5,3.6-5.6,5c-2.1,1.4-4.3,3.8-7,3.8c2.1,3.8,6,5.6,9.4,8c1.5,1.1,2.8,2.3,4.7,2.6c1.9,0.3,3.7,0.1,5.5,0.8c2,0.8,3.8,2.1,5.8,3c1.8,0.8,4.2,2.1,6.2,2.3c3.5,0.3,3.4-4.8,5.6-6.6c3-2.5,7.6-2.6,11.3-2.6c4.8-0.1,9.1-0.8,13.4-3.1c3.8-2,7.7-4.8,9.5-8.8c0.9-2,1-4.2,1.5-6.3c0.3-1.2,2.4-3.7,2.1-4.8Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="gordes" class="ilce-path" data-name="GÖRDES" d="M213.3,127.3c0.6-1.7,0.3-3.6,0.6-5.4c0.4-1.8,1.4-3.5,2.4-5c1.9-3,4.5-5.7,5.5-9.2c0.5-1.6,0.5-3.4,0.9-5c0.5-1.9,1.4-3.7,1.9-5.5c0.4-1.5,0.7-3.2-0.2-4.6c-0.3-0.4-0.9-0.6-1.1-1.1c-0.6-0.8-0.5-1.7-0.7-2.6c-1.6,1.1-3.6,0.6-5.4,0.5c-2-0.1-3.9,0-5.8,0.4c-4.4,1-8.6,2-13.1,1.5c-4.2-0.6-8.3-2.4-12.6-2.2c-4.1,0.2-7.8,2.3-11.9,2.3c0.7,2.7-0.2,5.5,0,8.3c0.1,3,1.3,5.9,0.5,8.8c-0.7,2.2-2.3,4-2.7,6.3c-0.5,2.4-0.1,4.9-1.3,7.2c-2.1,3.8-6.8,4.9-10.2,7c-1.8,1.1-3.7,2.5-4.7,4.4c-1.4,2.7-0.8,5.8-1.4,8.7c-1.1,5.1-4.9,9.1,0.7,13.1c4.3,3,9.5,1.5,14.4,1.5c2.7,0,5.1,0.6,7.5,1.7c1.5,0.7,3.2,1.6,4-0.5c0.7-1.9-0.6-3.8,0.7-5.6c1.2-1.7,3.8-2.3,5.7-2.7c2.7-0.5,5.8-0.1,8-2c2-1.6,2.8-4.3,3.8-6.6c0.7-1.6,1.6-3.7,3.7-3.4c2.1,0.3,2.5,3,4.3,3.9c0.6-3.2,2.5-6.1,4.4-8.7c0.9-1.3,3.7-4.1,2.6-5.8Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="kirkagac" class="ilce-path" data-name="KIRKAĞAÇ" d="M95.1,94c1.7-0.3,3.5-0.1,5.2-0.7c1.7-0.7,2.9-2.1,4.4-3c3.3-2.1,7.2-1.7,10.9-1.6c3.2,0.1,5.5,0,7.7-2.6c2.4-2.9,5.1-5.5,6.9-8.8c1.7-3.2,3.6-6.2,6-8.9c2.3-2.7,5.6-5,7.1-8.3c1.2-2.7-0.5-3.6-2.7-4.7c-3.5-1.8-3.2-4-1.5-7.2c2.1-3.9,3.9-11.1-1.3-13.5c-3.5-1.6-7.2,0.2-10.1,2.1c-1.7,1.1-3,1.9-5,2.2c-2.1,0.3-3.4,0.4-3.9,2.6c-0.3,1.2-0.4,2.4-0.9,3.6c-0.6,1.6-1.6,3-2.1,4.6c-0.9,3.5,1.4,7.2,0,10.6c-1.1,2.6-3.9,3.9-6.4,4.7c-1.8,0.6-3.7,1-5.5,1.6c-2.1,0.7-3.9,2-6,2.6c-1.6,0.4-3.3,0.1-4.8,0.9c-1.7,0.9-2.4,2.8-3.3,4.4c-1.1,1.9-2.3,3.6-2.9,5.8c-0.6,2.1-0.8,3.7-2.2,5.5c-2.6,3.4,0.1,4.5,3,6.2c1.6,0.9,3,2.1,5,2Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="soma" class="ilce-path" data-name="SOMA" d="M115.8,45.8c1-1.7,2.8-4.3,1.4-6.2c-0.7-0.9-2-1.2-2.9-1.9c-1.1-0.9-1.8-2.3-2.5-3.6c-1.1-2-2.3-4.2-4.5-5.1c-2.8-1.1-5.5,0.9-8.1,1.7c-5.1,1.6-11.2,0.9-15.8-1.8c-2-1.2-3.6-2.8-4.8-4.7c-1.2-2.1-1.9-4.5-4.1-5.8c-2.4-1.5-5.4-1.9-7.9-3.4c-3.1-2-4.8-2-7.9,0.1c-2,1.4-4.5,1.9-5.3,4.5c-0.7,2.3-0.1,5.3,0.8,7.4c1.9,4.5,6.4,7.2,8.6,11.5c2.3,4.5,2.3,10.2,0.7,14.9c-0.4,1.2-1.1,2.4-1.2,3.7c-0.1,1.5,0.7,2.8,1.1,4.3c1,3.3,1.1,6.7,2.3,10c1.1,3,2.5,5.8,2.8,9c0.4,3.9-0.1,7.8-0.1,11.7c3.9-0.4,7.4-1.9,11.1-2.9c3-0.8,4.4-3.3,5.6-6.2c2.2-5.4,3.5-13.6,10.6-14.5c1.7-0.2,2.9-0.3,4.4-1.3c1.5-1.1,2.7-1.9,4.5-2.3c3-0.6,7-0.2,8.9-3.1c1.7-2.5,0.5-5.9,0.4-8.7Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="sehzadeler" class="ilce-path" data-name="ŞEHZADELER" d="M42.2,161.2c5.8-3.6,12.5-5.3,19-7.4c-0.8-2.1-2.2-4-2.9-6.2c-0.9-2.7-1-5.6-2-8.3c-2-5.1-4.3-9.8-4.9-15.3c-0.5-3.8-0.6-8.1-5-9.3c-4.9-1.3-9.8,1.6-14.7,1.8c-2.5,0.1-5.2-0.5-7.5,0.7c-2,1.1-3.1,3.3-5.1,4.4c-3.8,2-9-1.2-11.7,3.1c-1.1,1.7-1.5,3.7-2.8,5.4c-1.4,1.7-3.4,3-4.2,5.1c-1.3,3.7,0.8,8.3,2.6,11.5c2.7,4.5,7.1,7.8,9.6,12.4c1.5,2.8,2.6,6,2.9,9.2c0.2,2.9-0.5,5.9,0.8,8.6c9.3-5.8,18.6-11.6,28-17.3Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="yunusemre" class="ilce-path" data-name="YUNUSEMRE" d="M76.6,181.3c-0.5-2.1-3.4-1.3-4.6-2.8c-0.9-1.2-0.2-2.7-0.4-4c-0.3-1.6-1.5-2.8-2.4-4.1c-1.5-2.2-2.3-4.9-3.5-7.2c-0.7-1.4-1.8-2.7-2.5-4.1c-0.4-0.9-0.7-2.6-1.7-3.1c-1.9-0.9-6.2,2-8,2.6c-3.2,1.1-6.3,2.4-9.3,4c-6.6,3.4-12.9,7.5-19.2,11.4c-1.3,0.8-2.5,1.5-3.8,2.2c-1,0.5-2.4,0.9-3.1,1.8c-1.2,1.6,0.2,5.6,0.9,7.3c1.1,2.7,3.9,4.1,6.3,5.6c2.7,1.7,5.5,3.2,8.5,4.1c5.7,1.7,12.3,0,17.5,3.2c4.2,2.6,4.5,8.6,8.9,10.9c2.5,1.3,6.1,1.5,8.7,0.6c3-1,4-3.7,4-6.6c0.1-3.8-0.1-7.4,1.1-11c1.1-3.5,3.5-7.1,2.8-10.9Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="saruhanli" class="ilce-path" data-name="SARUHANLI" d="M114.5,181.6c1.5,0.7,2,2.8,3.9,2.7c1.6-0.1,2.3-1.8,2.5-3.1c0.7-4.2-3.4-6.5-5.6-9.4c-1.3-1.7-2-3.6-3.1-5.4c-1.1-1.8-2.8-3.7-2.3-6c0.6-3.2,4.5-4.6,7.1-5.9c-0.7-1.2-2.4-1.1-3.6-1.7c-1.4-0.7-2.1-2.2-3.4-3.1c-1.4-0.9-3.2-0.9-4.6-1.8c-1.2-0.7-1.9-1.9-2.6-3.1c-1.7-3.2-2.4-6.9-4.4-9.9c-1.7-2.6-4.2-3.3-7.2-3.8c-3.6-0.6-6.9-1.8-10.4-3c-1.5-0.5-3.3-0.6-4.7-1.4c-1.3-0.8-2.2-2.2-3.2-3.3c-2.5-2.9-4.4-6.1-6.7-9.1c-1.8-2.2-4.8-3.9-5.4-6.9c-2.3,2.8-4.1,5.5-7.8,6.4c-1.3,0.3-2.2,0-2.3,1.7c-0.1,1.6,1.3,3.3,1.8,4.8c1.4,4,1.4,8.4,2.7,12.4c1.3,4,3.2,7.8,4.5,11.8c2.7,8.4,6.7,15.9,11.1,23.5c1,1.7,2,3.3,2.3,5.3c0.2,1.5,0,3.1,1.2,4.2c1.3,1.2,3.3,0.9,4.2,2.6c0.8,1.5,0.3,3.4,0,5c1.2-0.6,1.8-1.9,2.7-2.8c1.2-1.2,2.8-2,4.4-2.7c3.1-1.3,6.4-1.9,9.7-1.5c3.1,0.3,6.1,1.5,9.2,1.6c3.7,0.2,6.8,1.3,10.4,2Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="golmarmara" class="ilce-path" data-name="GÖLMARMARA" d="M158.4,158.9c-2.6,0-5-1.8-6.9-3.3c-1.5-1.2-2.2-3.4-4.2-3.5c-1.9,0-4,1-5.9,1.2c-3,0.4-5.8,1.3-8.6,2.2c-2.6,0.9-5.2,1.6-8,1.7c-2.5,0-5.1-0.3-7.6,0.2c-4.6,0.8-6.4,3.6-3.9,7.9c2.6,4.4,7.3,7.9,8.5,12.9c0.9,3.8,0.7,8.9,4.6,11.1c5.7,3.1,13.9-2.7,17.9-6.4c1.5-1.4,3.5-3,4.4-4.9c1.2-2.4-0.3-5,1.4-7.2c1.2-1.5,0.8-2,1.2-3.8c0.3-1.5,1.1-1.6,2.3-2.3Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="ahmetli" class="ilce-path" data-name="AHMETLİ" d="M124.7,218.4c1-4.1,7.1-4.1,7.7-8.3c0.4-2.8-1.6-5.6-1.7-8.4c-0.1-3.4,1.9-6.3,1.9-9.7c-5,1.4-10-2-11-7c-1.6,0.4-2.6,2.1-4.5,1.4c-1.2-0.4-2-1.9-2.9-2.7c-1.3-1.1-5.5-4.1-6.9-1.8c-1.6,2.7,2.7,8.6,4,10.8c1.6,2.6,4.1,5.1,4.5,8.2c0.2,1.8-0.4,3.5-0.9,5.2c-0.6,2.3-0.5,4.3-0.5,6.7c0,3.5-2.4,7.1,0.2,10.1c0.8,0.9,1.5,1.5,2,2.7c0.6,1.3,2.2,3.2,2.2,4.5c1-1,2.8-1,4-0.4c0.2-2.1,0.2-4.1,0.6-6.2c0.4-1.9,1.3-3.7,1.4-5.7Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="turgutlu" class="ilce-path" data-name="TURGUTLU" d="M113.8,237c0.5-1,0.6-2.1,1.3-3c0.7-0.9,1.3-1.3,1.1-2.6c-0.1-1-1-1.9-1.4-2.9c-0.4-0.9-0.6-2-1.1-2.8c-1-1.7-2.8-2.7-3.1-4.7c-0.4-2.3,1.1-4.6,1.2-7c0-2.6-0.5-4.6,0.4-7.1c0.7-2,1.9-4.1,1.3-6.3c-0.6-2.1-2.7-3.1-3.9-4.8c-1.3-1.8-1.8-4.1-2.4-6.3c-0.5-2.1-1-4.4-2.3-6.2c-1.4-1.9-3.4-2.2-5.5-2.6c-5.1-1.1-9.4-1.7-14.2,1.1c-2,1.2-3.9,2.6-5.6,4.1c-1.9,1.6-2.5,3.1-3.1,5.5c-0.5,2.4-1.6,4.6-1.8,7.1c-0.2,2.6,0.2,5.2-0.6,7.7c3.1,0,4,3.2,5.3,5.4c1.7,2.8,4.9,3.5,7.1,5.9c2.3,2.5,2.7,6.1,3.4,9.3c0.8,3.6,1.2,7.6,2.9,10.9c2.7,5.3,9,5.2,13.7,7.6c1.6,0.8,4.8,4.1,6.2,1.4c0.8-1.4-0.1-3.5-0.2-5c-0.1-1.7,0.1-3.4,1.4-4.8Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="salihli" class="ilce-path" data-name="SALİHLİ" d="M214.9,176.8c-1.8,0-2.6-2.8-5-2.5c-2.8,0.3-4,3.2-5.4,5.2c-2.3,3.1-7.6,7.3-11.4,4c-2-1.8-3.3-4.9-3.9-7.5c-0.5-2.4-0.1-5.1-1.2-7.3c-1.1-2.2-3.3-3-5.3-4c-2.6-1.2-4.8-3.1-7.4-4.4c-2.6-1.4-5.3-1.6-8.2-1.6c-2.4,0-5.9-0.8-7.1,1.7c-0.4,0.8-0.4,1.7-0.9,2.5c-0.7,1-1.9,1.6-2.9,2.3c-2.2,1.5-3.4,3.5-4.2,6c-0.8,2.3-0.6,4.6-1.2,6.9c-0.6,2.6-2.5,4.5-4.4,6.3c-3.4,3.1-9.4,3.9-11.7,8c-1.3,2.3-1.8,5.6-2,8.2c-0.3,3.3,1.2,5.6,2,8.7c1.5,5.9-5,5.2-7.5,9c-1.9,2.9-3.6,8.1-2.9,11.5c1.1,5.7,7.7,3.4,11.2,1.8c4.3-2,9.3-3.7,13.5-0.7c4.1,2.9,4,8.3,7.4,11.7c1.9,1.9,4.9,2.9,7.2,4.2c2.2,1.3,5.1,3.9,7.9,3.6c2.5-0.3,2.8-2.8,3.4-4.8c1-2.9,2.6-5.5,4.2-8c3.2-5.1,7.1-10,12.7-12.7c1.4-0.7,3-1,4.1-2.3c0.8-1,1.2-2.3,1.7-3.4c1.4-2.9,3.3-5.1,5.7-7.3c2.2-2,3.6-4.3,5.2-6.8c1.7-2.6,3.3-5.2,3.4-8.4c0.1-3.6-1.1-7-0.1-10.6Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="koprubasi" class="ilce-path" data-name="KÖPRÜBAŞI" d="M213.4,157.5c2.9-2.9,4.4-5.7,0.4-8c-3.5-2-5.9-5.3-9.3-7.5c-3.8-2.4-4.7,0-6,3.2c-1.5,3.6-4.1,5.4-7.9,6c-2.9,0.5-7.2,0.4-8.5,3.7c-0.4,1.1-0.1,2.1-0.3,3.2c-0.2,0.7-0.7,1.3-0.8,2.1c-0.4,2.1,1.2,2.5,2.8,3.1c3.7,1.6,6,4.2,7,8.1c1.1,4.2,1.8,8.5,4.8,11.8c0.8-1.2,2.3-1.1,3.5-1.5c1.3-0.5,2.3-1.2,3.2-2.3c1.2-1.4,2.1-2.9,3.4-4.1c1.2-1.2,2.6-1.8,3.9-2.8c2.7-2.1,2.3-4.8,2.1-7.9c-0.1-1.6-0.2-3.5,0.3-5.1Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="kula" class="ilce-path" data-name="KULA" d="M270.6,204.8c1.3-2.6,1.2-5.5,1.7-8.3c0.5-2.9,2.1-5.4,2.9-8.2c-2,0-3.8-1.1-5.7-1.6c-1.9-0.5-4.1-0.4-5.8-1.5c-1.5-0.9-2.3-2.4-4.1-2.9c-1.9-0.5-3.8,0.4-5.7-0.1c-1.7-0.4-2.9-1.9-4.3-2.9c-1.6-1.2-3.4-2-4.8-3.5c-2.5-2.6-3.7-5.7-7.9-5.3c-4,0.4-7.6,3-11.3,4.3c-3.2,1.2-8.2-0.1-9.4,3.8c-1.1,3.6-3,7.4-3.1,11.2c-0.1,2.2,0.3,4.3,0.2,6.5c-0.1,2.1-1.2,4.1-1.1,6.1c0.1,3.8,6.4,4.3,5.9,8.4c-0.4,3.4-5.2,4.5-6.4,7.5c-1.3,2.9,2,3.5,4.1,3.8c3.1,0.3,5.7,0.8,8.7,1.8c3.6,1.2,9,2.4,11.7,5.3c1.3,1.4,0.9,2.9,1.7,4.4c0.9,1.9,2.6,1.4,4.3,1.3c4.1-0.2,5.4,2.5,7.1,5.7c1.3,2.5,3.3,4.6,6.3,4.1c5.1-0.9,9.4-7.8,10.8-12.4c0.7-2.2,0.3-4.4,0.1-6.7c-0.2-2.3,0.2-4.5,0.7-6.7c1.1-4.7,1.2-9.9,3.3-14.3Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="alasehir" class="ilce-path" data-name="ALAŞEHİR" d="M237.3,267.6c0.8-1,1.9-1.7,2.5-2.8c0.7-1.4,0.5-3.1,0.8-4.6c0.5-2.6,2.3-4.8,4.8-5.6c5.1-1.7,10.1,3.1,15.2,1.1c-3-1.5-4.9-6.2-2.2-8.9c-1.9,0-4.3,0.8-6.2,0.1c-2-0.6-2.1-2.6-2.7-4.3c-0.7-1.8-1.9-4-3.7-4.9c-2.2-1.1-4.4,0.7-6.5-0.2c-1.9-0.8-1.6-2.9-2.2-4.5c-0.8-2.1-2.5-2.9-4.5-3.6c-5.4-1.9-10.9-3.4-16.4-4.7c-4.1-1-7.1-4-3.9-8c1.2-1.5,3.3-2.4,4.2-4.1c1.2-2.3-0.9-4.4-2.9-5.5c-4.2-2.3-5.7,4.9-8.1,7.1c-1.8,1.7-3.6,3-4.8,5.3c-1.2,2.2-1.9,4.5-4,6c-2.1,1.6-4.7,2.4-6.8,3.8c-2.2,1.5-4.3,3.2-6,5.4c-1.8,2.4-3.1,5.2-4.6,7.8c-1.5,2.6-3.1,5.2-3.4,8.2c4.6,0,9.3,1.4,13,4.2c3.6,2.7,5.9,6.7,9.5,9.3c1.7,1.3,3.6,2.1,5.7,2.4c2.1,0.3,4.3,0.4,6.1,1.6c3.2,2.1,3.9,6.3,2.1,9.5c-1.8,3.1-5.6,5.4-5,9.4c0.5,3.7,4.2,6.6,6.8,8.9c2.8,2.5,6.2,4.3,9.2,1.1c2.1-2.3,2.9-5.6,4.8-8c1.4-1.8,3.8-3.2,4.3-5.6c0.5-2.2-1-4.1-1.2-6.2c-0.2-2.1,0.7-4.1,1.9-5.7Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
-        <path id="sarigol" class="ilce-path" data-name="SARIGÖL" d="M271.8,272.8c-4.9-4.9-2.3-16.1-12-14.9c-3.9,0.5-7-1.1-10.8-1.3c-4-0.2-5.7,2.3-6.8,5.8c-1.1,3.4-2.2,5.6-4.8,8.2c-2.4,2.4-4.6,4.8-3.8,8.5c0.4,1.9,1.2,3.6,0.6,5.7c-0.6,1.9-2.2,3.3-3.4,4.9c-1.3,1.8-2.3,3.8-3.6,5.7c-1.2,1.7-2.6,3.2-3.7,4.9c5.8,2.9,12.8,6.7,19.1,3.2c5.8-3.1,6.3-9.6,9.8-14.4c3-4.2,9-3.4,12.9-6.1c1.1-0.7,1.9-1.9,3-2.6c1.3-0.8,2.9-0.4,4.2-1.2Z" fill="#aaa" stroke="#fff" stroke-width="1"/>
+<!-- BODY -->
+<div class="app-body">
 
+  <!-- MAP -->
+  <div class="map-wrap">
+    <div id="export-area">
+      <div id="mapTitleDisplay"></div>
+      <svg id="manisa-map" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+        <g id="pathsGroup">
+          <path id="akhisar" class="ilce-path" data-name="AKHİSAR" d="M153.9,131.4c1.4-1.5,2.7-3.2,4.5-4.3c1.6-1,3.5-1.3,5.2-2.2c3.3-1.8,4.9-5.1,5.6-8.7c0.7-3.7,2.7-7.3,2.9-11.1c0.1-1.9-0.3-3.8-0.4-5.7c-0.1-1.9,0.7-4.1,0.3-6c-0.7-3.3-4.4-3.5-6.6-5.4c-3-2.5-4.1-6.7-5.4-10.2c-1.3-3.6-3.3-6.1-6.1-8.6c-3-2.7-5.1-6.2-7.9-9.1c-1.1,1.7-2.7,3-4,4.6c-1.5,1.7-2.6,3.7-4.1,5.4c-1.4,1.6-3.2,2.8-4.3,4.6c-1.1,1.9-1.2,4.1-2.2,6c-0.9,1.6-2.4,2.4-3.7,3.6c-1.6,1.4-1.9,3.5-3.3,5.1c-2.4,2.7-8.3,1.3-11.5,1.5c-8.2,0.5-15,8.6-23.5,4.7c-2.7-1.2-4.8-4.1-8-4.3c-1.8-0.1-3.5,0.7-5.3,0.9c-2,0.2-4.2,0.2-6,1.1c-1.6,0.8-2.1,2.2-2.9,3.8c-1,2-2.1,3.8-2.9,5.9c-1.6,4-0.5,5.4,2.3,8.4c2.8,3,4.3,6.9,7,9.9c2.7,3.1,6.4,5,10.3,6.3c4.1,1.4,8.9,1,12.7,3c3.2,1.7,4.6,5.2,5.8,8.4c0.7,1.8,1.2,3.9,2.4,5.5c1.3,1.6,3.3,2.1,5,3c3.8,2,6.6,5.4,10.4,7.3c4.2,2.1,8.9,0.2,12.9-1.3c2.4-0.9,4.7-1.7,7.3-2c2.4-0.3,4.8-0.2,6.9-1.6c3.2-2.2,4.5-6.8,4.6-10.5c0.1-2-0.5-4.1,0.6-5.9Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="demirci" class="ilce-path" data-name="DEMİRCİ" d="M259.3,144.7c1.3-1.3,2.8-2.9,4.8-2.9c1.6,0,3,1.3,4.6,1c2-0.4,2.1-2.5,3-3.9c1-1.5,2.7-2,4.3-2.6c1.8-0.6,3.8-1.3,5.8-1c1.7,0.3,3.1,1.6,5,1.1c1.7-0.5,2.8-2.3,4.3-3.2c1.7-1,3.8-1.4,5.7-1.7c-1.2-3.4-5.4-5.6-5.1-9.6c0.2-2.2,1.9-3.5,2.7-5.5c0.8-2.1-0.1-3.9-1.3-5.6c-1.3-2-2.4-4.1-3.9-6c-1.5-1.8-3.6-2.9-5.5-4.2c-1.9-1.3-3.6-3-5.5-4.3c-2.1-1.4-4.6-2-7-2.6c-4.8-1.3-10.6-1.9-14.8-4.6c-1.6-1.1-3.7-2.3-4.9-3.8c-1.6-2.1-0.3-3.7-0.3-6c0-4.4-5.1-2.8-7.5-1.7c-3.7,1.6-7.2,3.1-11,4.4c-2.9,1-10.6,3.3-7.5,7.5c1.2,1.6,2.1,2.7,2.1,4.8c0.1,2.2-0.6,4.4-1.3,6.5c-1.4,4.5-3.1,8.7-5.6,12.8c-1.2,2-2.5,3.9-3.3,6.1c-0.8,2.4-0.9,5-1.5,7.5c-0.6,2.2-1.5,4.3-2.6,6.2c-1.1,1.8-2.6,3.4-3.4,5.3c-1.8,4.4,2.5,6,5.6,8c4.6,3,3.1,6.5,0.9,10.6c-1.1,2.1-1.8,4-2,6.4c-0.1,2.4-0.6,5.5,0,7.9c1.2,5.1,9,1.5,12,0.4c5.7-2,11.7-3.4,17.4-5.6c4.2-1.7,9.5-3.9,11-8.7c0.8-2.6,0.2-5.5,1.3-8c1-2.1,3.1-3.5,4.2-5.6Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="selendi" class="ilce-path" data-name="SELENDİ" d="M316.5,154.7c1.5-1.5,4.4-3.1,5.1-5.2c1.2-3.8-6.5-0.9-7.8-0.6c-4.3,0.9-9.5-0.7-12.2-4.3c-1.1-1.4-1.7-2.9-2-4.6c-0.3-1.6-0.2-3.7-1.4-5.1c-2.9-3.1-7.2,1.4-9.7,2.8c-3.9,2.1-7.8-0.7-11.8,0.1c-3.9,0.8-3.6,4.6-6.5,6.4c-1.7,1.1-3.6,0.2-5.4,0.1c-2.3-0.1-4.1,1.3-5.5,3c-3.2,4-2.3,9.1-4.6,13.4c-1.3,2.3-3.5,3.6-5.6,5c-2.1,1.4-4.3,3.8-7,3.8c2.1,3.8,6,5.6,9.4,8c1.5,1.1,2.8,2.3,4.7,2.6c1.9,0.3,3.7,0.1,5.5,0.8c2,0.8,3.8,2.1,5.8,3c1.8,0.8,4.2,2.1,6.2,2.3c3.5,0.3,3.4-4.8,5.6-6.6c3-2.5,7.6-2.6,11.3-2.6c4.8-0.1,9.1-0.8,13.4-3.1c3.8-2,7.7-4.8,9.5-8.8c0.9-2,1-4.2,1.5-6.3c0.3-1.2,2.4-3.7,2.1-4.8Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="gordes" class="ilce-path" data-name="GÖRDES" d="M213.3,127.3c0.6-1.7,0.3-3.6,0.6-5.4c0.4-1.8,1.4-3.5,2.4-5c1.9-3,4.5-5.7,5.5-9.2c0.5-1.6,0.5-3.4,0.9-5c0.5-1.9,1.4-3.7,1.9-5.5c0.4-1.5,0.7-3.2-0.2-4.6c-0.3-0.4-0.9-0.6-1.1-1.1c-0.6-0.8-0.5-1.7-0.7-2.6c-1.6,1.1-3.6,0.6-5.4,0.5c-2-0.1-3.9,0-5.8,0.4c-4.4,1-8.6,2-13.1,1.5c-4.2-0.6-8.3-2.4-12.6-2.2c-4.1,0.2-7.8,2.3-11.9,2.3c0.7,2.7-0.2,5.5,0,8.3c0.1,3,1.3,5.9,0.5,8.8c-0.7,2.2-2.3,4-2.7,6.3c-0.5,2.4-0.1,4.9-1.3,7.2c-2.1,3.8-6.8,4.9-10.2,7c-1.8,1.1-3.7,2.5-4.7,4.4c-1.4,2.7-0.8,5.8-1.4,8.7c-1.1,5.1-4.9,9.1,0.7,13.1c4.3,3,9.5,1.5,14.4,1.5c2.7,0,5.1,0.6,7.5,1.7c1.5,0.7,3.2,1.6,4-0.5c0.7-1.9-0.6-3.8,0.7-5.6c1.2-1.7,3.8-2.3,5.7-2.7c2.7-0.5,5.8-0.1,8-2c2-1.6,2.8-4.3,3.8-6.6c0.7-1.6,1.6-3.7,3.7-3.4c2.1,0.3,2.5,3,4.3,3.9c0.6-3.2,2.5-6.1,4.4-8.7c0.9-1.3,3.7-4.1,2.6-5.8Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="kirkagac" class="ilce-path" data-name="KIRKAĞAÇ" d="M95.1,94c1.7-0.3,3.5-0.1,5.2-0.7c1.7-0.7,2.9-2.1,4.4-3c3.3-2.1,7.2-1.7,10.9-1.6c3.2,0.1,5.5,0,7.7-2.6c2.4-2.9,5.1-5.5,6.9-8.8c1.7-3.2,3.6-6.2,6-8.9c2.3-2.7,5.6-5,7.1-8.3c1.2-2.7-0.5-3.6-2.7-4.7c-3.5-1.8-3.2-4-1.5-7.2c2.1-3.9,3.9-11.1-1.3-13.5c-3.5-1.6-7.2,0.2-10.1,2.1c-1.7,1.1-3,1.9-5,2.2c-2.1,0.3-3.4,0.4-3.9,2.6c-0.3,1.2-0.4,2.4-0.9,3.6c-0.6,1.6-1.6,3-2.1,4.6c-0.9,3.5,1.4,7.2,0,10.6c-1.1,2.6-3.9,3.9-6.4,4.7c-1.8,0.6-3.7,1-5.5,1.6c-2.1,0.7-3.9,2-6,2.6c-1.6,0.4-3.3,0.1-4.8,0.9c-1.7,0.9-2.4,2.8-3.3,4.4c-1.1,1.9-2.3,3.6-2.9,5.8c-0.6,2.1-0.8,3.7-2.2,5.5c-2.6,3.4,0.1,4.5,3,6.2c1.6,0.9,3,2.1,5,2Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="soma" class="ilce-path" data-name="SOMA" d="M115.8,45.8c1-1.7,2.8-4.3,1.4-6.2c-0.7-0.9-2-1.2-2.9-1.9c-1.1-0.9-1.8-2.3-2.5-3.6c-1.1-2-2.3-4.2-4.5-5.1c-2.8-1.1-5.5,0.9-8.1,1.7c-5.1,1.6-11.2,0.9-15.8-1.8c-2-1.2-3.6-2.8-4.8-4.7c-1.2-2.1-1.9-4.5-4.1-5.8c-2.4-1.5-5.4-1.9-7.9-3.4c-3.1-2-4.8-2-7.9,0.1c-2,1.4-4.5,1.9-5.3,4.5c-0.7,2.3-0.1,5.3,0.8,7.4c1.9,4.5,6.4,7.2,8.6,11.5c2.3,4.5,2.3,10.2,0.7,14.9c-0.4,1.2-1.1,2.4-1.2,3.7c-0.1,1.5,0.7,2.8,1.1,4.3c1,3.3,1.1,6.7,2.3,10c1.1,3,2.5,5.8,2.8,9c0.4,3.9-0.1,7.8-0.1,11.7c3.9-0.4,7.4-1.9,11.1-2.9c3-0.8,4.4-3.3,5.6-6.2c2.2-5.4,3.5-13.6,10.6-14.5c1.7-0.2,2.9-0.3,4.4-1.3c1.5-1.1,2.7-1.9,4.5-2.3c3-0.6,7-0.2,8.9-3.1c1.7-2.5,0.5-5.9,0.4-8.7Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="yunusemre" class="ilce-path" data-name="YUNUSEMRE" d="M42.2,161.2c5.8-3.6,12.5-5.3,19-7.4c-0.8-2.1-2.2-4-2.9-6.2c-0.9-2.7-1-5.6-2-8.3c-2-5.1-4.3-9.8-4.9-15.3c-0.5-3.8-0.6-8.1-5-9.3c-4.9-1.3-9.8,1.6-14.7,1.8c-2.5,0.1-5.2-0.5-7.5,0.7c-2,1.1-3.1,3.3-5.1,4.4c-3.8,2-9-1.2-11.7,3.1c-1.1,1.7-1.5,3.7-2.8,5.4c-1.4,1.7-3.4,3-4.2,5.1c-1.3,3.7,0.8,8.3,2.6,11.5c2.7,4.5,7.1,7.8,9.6,12.4c1.5,2.8,2.6,6,2.9,9.2c0.2,2.9-0.5,5.9,0.8,8.6c9.3-5.8,18.6-11.6,28-17.3Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="sehzadeler" class="ilce-path" data-name="ŞEHZADELER" d="M76.6,181.3c-0.5-2.1-3.4-1.3-4.6-2.8c-0.9-1.2-0.2-2.7-0.4-4c-0.3-1.6-1.5-2.8-2.4-4.1c-1.5-2.2-2.3-4.9-3.5-7.2c-0.7-1.4-1.8-2.7-2.5-4.1c-0.4-0.9-0.7-2.6-1.7-3.1c-1.9-0.9-6.2,2-8,2.6c-3.2,1.1-6.3,2.4-9.3,4c-6.6,3.4-12.9,7.5-19.2,11.4c-1.3,0.8-2.5,1.5-3.8,2.2c-1,0.5-2.4,0.9-3.1,1.8c-1.2,1.6,0.2,5.6,0.9,7.3c1.1,2.7,3.9,4.1,6.3,5.6c2.7,1.7,5.5,3.2,8.5,4.1c5.7,1.7,12.3,0,17.5,3.2c4.2,2.6,4.5,8.6,8.9,10.9c2.5,1.3,6.1,1.5,8.7,0.6c3-1,4-3.7,4-6.6c0.1-3.8-0.1-7.4,1.1-11c1.1-3.5,3.5-7.1,2.8-10.9Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="saruhanli" class="ilce-path" data-name="SARUHANLI" d="M114.5,181.6c1.5,0.7,2,2.8,3.9,2.7c1.6-0.1,2.3-1.8,2.5-3.1c0.7-4.2-3.4-6.5-5.6-9.4c-1.3-1.7-2-3.6-3.1-5.4c-1.1-1.8-2.8-3.7-2.3-6c0.6-3.2,4.5-4.6,7.1-5.9c-0.7-1.2-2.4-1.1-3.6-1.7c-1.4-0.7-2.1-2.2-3.4-3.1c-1.4-0.9-3.2-0.9-4.6-1.8c-1.2-0.7-1.9-1.9-2.6-3.1c-1.7-3.2-2.4-6.9-4.4-9.9c-1.7-2.6-4.2-3.3-7.2-3.8c-3.6-0.6-6.9-1.8-10.4-3c-1.5-0.5-3.3-0.6-4.7-1.4c-1.3-0.8-2.2-2.2-3.2-3.3c-2.5-2.9-4.4-6.1-6.7-9.1c-1.8-2.2-4.8-3.9-5.4-6.9c-2.3,2.8-4.1,5.5-7.8,6.4c-1.3,0.3-2.2,0-2.3,1.7c-0.1,1.6,1.3,3.3,1.8,4.8c1.4,4,1.4,8.4,2.7,12.4c1.3,4,3.2,7.8,4.5,11.8c2.7,8.4,6.7,15.9,11.1,23.5c1,1.7,2,3.3,2.3,5.3c0.2,1.5,0,3.1,1.2,4.2c1.3,1.2,3.3,0.9,4.2,2.6c0.8,1.5,0.3,3.4,0,5c1.2-0.6,1.8-1.9,2.7-2.8c1.2-1.2,2.8-2,4.4-2.7c3.1-1.3,6.4-1.9,9.7-1.5c3.1,0.3,6.1,1.5,9.2,1.6c3.7,0.2,6.8,1.3,10.4,2Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="golmarmara" class="ilce-path" data-name="GÖLMARMARA" d="M158.4,158.9c-2.6,0-5-1.8-6.9-3.3c-1.5-1.2-2.2-3.4-4.2-3.5c-1.9,0-4,1-5.9,1.2c-3,0.4-5.8,1.3-8.6,2.2c-2.6,0.9-5.2,1.6-8,1.7c-2.5,0-5.1-0.3-7.6,0.2c-4.6,0.8-6.4,3.6-3.9,7.9c2.6,4.4,7.3,7.9,8.5,12.9c0.9,3.8,0.7,8.9,4.6,11.1c5.7,3.1,13.9-2.7,17.9-6.4c1.5-1.4,3.5-3,4.4-4.9c1.2-2.4-0.3-5,1.4-7.2c1.2-1.5,0.8-2,1.2-3.8c0.3-1.5,1.1-1.6,2.3-2.3Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="ahmetli" class="ilce-path" data-name="AHMETLİ" d="M124.7,218.4c1-4.1,7.1-4.1,7.7-8.3c0.4-2.8-1.6-5.6-1.7-8.4c-0.1-3.4,1.9-6.3,1.9-9.7c-5,1.4-10-2-11-7c-1.6,0.4-2.6,2.1-4.5,1.4c-1.2-0.4-2-1.9-2.9-2.7c-1.3-1.1-5.5-4.1-6.9-1.8c-1.6,2.7,2.7,8.6,4,10.8c1.6,2.6,4.1,5.1,4.5,8.2c0.2,1.8-0.4,3.5-0.9,5.2c-0.6,2.3-0.5,4.3-0.5,6.7c0,3.5-2.4,7.1,0.2,10.1c0.8,0.9,1.5,1.5,2,2.7c0.6,1.3,2.2,3.2,2.2,4.5c1-1,2.8-1,4-0.4c0.2-2.1,0.2-4.1,0.6-6.2c0.4-1.9,1.3-3.7,1.4-5.7Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="turgutlu" class="ilce-path" data-name="TURGUTLU" d="M113.8,237c0.5-1,0.6-2.1,1.3-3c0.7-0.9,1.3-1.3,1.1-2.6c-0.1-1-1-1.9-1.4-2.9c-0.4-0.9-0.6-2-1.1-2.8c-1-1.7-2.8-2.7-3.1-4.7c-0.4-2.3,1.1-4.6,1.2-7c0-2.6-0.5-4.6,0.4-7.1c0.7-2,1.9-4.1,1.3-6.3c-0.6-2.1-2.7-3.1-3.9-4.8c-1.3-1.8-1.8-4.1-2.4-6.3c-0.5-2.1-1-4.4-2.3-6.2c-1.4-1.9-3.4-2.2-5.5-2.6c-5.1-1.1-9.4-1.7-14.2,1.1c-2,1.2-3.9,2.6-5.6,4.1c-1.9,1.6-2.5,3.1-3.1,5.5c-0.5,2.4-1.6,4.6-1.8,7.1c-0.2,2.6,0.2,5.2-0.6,7.7c3.1,0,4,3.2,5.3,5.4c1.7,2.8,4.9,3.5,7.1,5.9c2.3,2.5,2.7,6.1,3.4,9.3c0.8,3.6,1.2,7.6,2.9,10.9c2.7,5.3,9,5.2,13.7,7.6c1.6,0.8,4.8,4.1,6.2,1.4c0.8-1.4-0.1-3.5-0.2-5c-0.1-1.7,0.1-3.4,1.4-4.8Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="salihli" class="ilce-path" data-name="SALİHLİ" d="M214.9,176.8c-1.8,0-2.6-2.8-5-2.5c-2.8,0.3-4,3.2-5.4,5.2c-2.3,3.1-7.6,7.3-11.4,4c-2-1.8-3.3-4.9-3.9-7.5c-0.5-2.4-0.1-5.1-1.2-7.3c-1.1-2.2-3.3-3-5.3-4c-2.6-1.2-4.8-3.1-7.4-4.4c-2.6-1.4-5.3-1.6-8.2-1.6c-2.4,0-5.9-0.8-7.1,1.7c-0.4,0.8-0.4,1.7-0.9,2.5c-0.7,1-1.9,1.6-2.9,2.3c-2.2,1.5-3.4,3.5-4.2,6c-0.8,2.3-0.6,4.6-1.2,6.9c-0.6,2.6-2.5,4.5-4.4,6.3c-3.4,3.1-9.4,3.9-11.7,8c-1.3,2.3-1.8,5.6-2,8.2c-0.3,3.3,1.2,5.6,2,8.7c1.5,5.9-5,5.2-7.5,9c-1.9,2.9-3.6,8.1-2.9,11.5c1.1,5.7,7.7,3.4,11.2,1.8c4.3-2,9.3-3.7,13.5-0.7c4.1,2.9,4,8.3,7.4,11.7c1.9,1.9,4.9,2.9,7.2,4.2c2.2,1.3,5.1,3.9,7.9,3.6c2.5-0.3,2.8-2.8,3.4-4.8c1-2.9,2.6-5.5,4.2-8c3.2-5.1,7.1-10,12.7-12.7c1.4-0.7,3-1,4.1-2.3c0.8-1,1.2-2.3,1.7-3.4c1.4-2.9,3.3-5.1,5.7-7.3c2.2-2,3.6-4.3,5.2-6.8c1.7-2.6,3.3-5.2,3.4-8.4c0.1-3.6-1.1-7-0.1-10.6Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="koprubasi" class="ilce-path" data-name="KÖPRÜBAŞI" d="M213.4,157.5c2.9-2.9,4.4-5.7,0.4-8c-3.5-2-5.9-5.3-9.3-7.5c-3.8-2.4-4.7,0-6,3.2c-1.5,3.6-4.1,5.4-7.9,6c-2.9,0.5-7.2,0.4-8.5,3.7c-0.4,1.1-0.1,2.1-0.3,3.2c-0.2,0.7-0.7,1.3-0.8,2.1c-0.4,2.1,1.2,2.5,2.8,3.1c3.7,1.6,6,4.2,7,8.1c1.1,4.2,1.8,8.5,4.8,11.8c0.8-1.2,2.3-1.1,3.5-1.5c1.3-0.5,2.3-1.2,3.2-2.3c1.2-1.4,2.1-2.9,3.4-4.1c1.2-1.2,2.6-1.8,3.9-2.8c2.7-2.1,2.3-4.8,2.1-7.9c-0.1-1.6-0.2-3.5,0.3-5.1Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="kula" class="ilce-path" data-name="KULA" d="M270.6,204.8c1.3-2.6,1.2-5.5,1.7-8.3c0.5-2.9,2.1-5.4,2.9-8.2c-2,0-3.8-1.1-5.7-1.6c-1.9-0.5-4.1-0.4-5.8-1.5c-1.5-0.9-2.3-2.4-4.1-2.9c-1.9-0.5-3.8,0.4-5.7-0.1c-1.7-0.4-2.9-1.9-4.3-2.9c-1.6-1.2-3.4-2-4.8-3.5c-2.5-2.6-3.7-5.7-7.9-5.3c-4,0.4-7.6,3-11.3,4.3c-3.2,1.2-8.2-0.1-9.4,3.8c-1.1,3.6-3,7.4-3.1,11.2c-0.1,2.2,0.3,4.3,0.2,6.5c-0.1,2.1-1.2,4.1-1.1,6.1c0.1,3.8,6.4,4.3,5.9,8.4c-0.4,3.4-5.2,4.5-6.4,7.5c-1.3,2.9,2,3.5,4.1,3.8c3.1,0.3,5.7,0.8,8.7,1.8c3.6,1.2,9,2.4,11.7,5.3c1.3,1.4,0.9,2.9,1.7,4.4c0.9,1.9,2.6,1.4,4.3,1.3c4.1-0.2,5.4,2.5,7.1,5.7c1.3,2.5,3.3,4.6,6.3,4.1c5.1-0.9,9.4-7.8,10.8-12.4c0.7-2.2,0.3-4.4,0.1-6.7c-0.2-2.3,0.2-4.5,0.7-6.7c1.1-4.7,1.2-9.9,3.3-14.3Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="alasehir" class="ilce-path" data-name="ALAŞEHİR" d="M237.3,267.6c0.8-1,1.9-1.7,2.5-2.8c0.7-1.4,0.5-3.1,0.8-4.6c0.5-2.6,2.3-4.8,4.8-5.6c5.1-1.7,10.1,3.1,15.2,1.1c-3-1.5-4.9-6.2-2.2-8.9c-1.9,0-4.3,0.8-6.2,0.1c-2-0.6-2.1-2.6-2.7-4.3c-0.7-1.8-1.9-4-3.7-4.9c-2.2-1.1-4.4,0.7-6.5-0.2c-1.9-0.8-1.6-2.9-2.2-4.5c-0.8-2.1-2.5-2.9-4.5-3.6c-5.4-1.9-10.9-3.4-16.4-4.7c-4.1-1-7.1-4-3.9-8c1.2-1.5,3.3-2.4,4.2-4.1c1.2-2.3-0.9-4.4-2.9-5.5c-4.2-2.3-5.7,4.9-8.1,7.1c-1.8,1.7-3.6,3-4.8,5.3c-1.2,2.2-1.9,4.5-4,6c-2.1,1.6-4.7,2.4-6.8,3.8c-2.2,1.5-4.3,3.2-6,5.4c-1.8,2.4-3.1,5.2-4.6,7.8c-1.5,2.6-3.1,5.2-3.4,8.2c4.6,0,9.3,1.4,13,4.2c3.6,2.7,5.9,6.7,9.5,9.3c1.7,1.3,3.6,2.1,5.7,2.4c2.1,0.3,4.3,0.4,6.1,1.6c3.2,2.1,3.9,6.3,2.1,9.5c-1.8,3.1-5.6,5.4-5,9.4c0.5,3.7,4.2,6.6,6.8,8.9c2.8,2.5,6.2,4.3,9.2,1.1c2.1-2.3,2.9-5.6,4.8-8c1.4-1.8,3.8-3.2,4.3-5.6c0.5-2.2-1-4.1-1.2-6.2c-0.2-2.1,0.7-4.1,1.9-5.7Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+          <path id="sarigol" class="ilce-path" data-name="SARIGÖL" d="M271.8,272.8c-4.9-4.9-2.3-16.1-12-14.9c-3.9,0.5-7-1.1-10.8-1.3c-4-0.2-5.7,2.3-6.8,5.8c-1.1,3.4-2.2,5.6-4.8,8.2c-2.4,2.4-4.6,4.8-3.8,8.5c0.4,1.9,1.2,3.6,0.6,5.7c-0.6,1.9-2.2,3.3-3.4,4.9c-1.3,1.8-2.3,3.8-3.6,5.7c-1.2,1.7-2.6,3.2-3.7,4.9c5.8,2.9,12.8,6.7,19.1,3.2c5.8-3.1,6.3-9.6,9.8-14.4c3-4.2,9-3.4,12.9-6.1c1.1-0.7,1.9-1.9,3-2.6c1.3-0.8,2.9-0.4,4.2-1.2Z" fill="#555568" stroke="#1a1a22" stroke-width="1"/>
+        </g>
         <g id="labelsGroup">
-          <text x="118" y="118" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">AKHİSAR</text>
-          <text x="255" y="138" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">DEMİRCİ</text>
-          <text x="292" y="156" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">SELENDİ</text>
-          <text x="196" y="118" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">GÖRDES</text>
-          <text x="95" y="72" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">KIRKAĞAÇ</text>
-          <text x="77" y="44" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">SOMA</text>
-          <text x="22" y="162" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">ŞEHZADELERx</text>
-          <text x="44" y="194" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">YUNUSEMRE</text>
-          <text x="92" y="168" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">SARUHANLI</text>
-          <text x="138" y="171" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">GÖLMARMARA</text>
-          <text x="112" y="210" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">AHMETLİ</text>
-          <text x="90" y="243" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">TURGUTLU</text>
-          <text x="176" y="207" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">SALİHLİ</text>
-          <text x="192" y="160" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">KÖPRÜBAŞI</text>
-          <text x="244" y="200" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">KULA</text>
-          <text x="203" y="265" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">ALAŞEHİR</text>
-          <text x="247" y="281" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="500">SARIGÖL</text>
+          <text x="118" y="118" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">AKHİSAR</text>
+          <text x="255" y="138" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">DEMİRCİ</text>
+          <text x="292" y="156" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">SELENDİ</text>
+          <text x="196" y="118" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">GÖRDES</text>
+          <text x="95" y="72" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">KIRKAĞAÇ</text>
+          <text x="77" y="44" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">SOMA</text>
+          <text x="22" y="162" font-size="6.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">YUNUSEMRE</text>
+          <text x="44" y="194" font-size="6.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">ŞEHZADELER</text>
+          <text x="92" y="168" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">SARUHANLI</text>
+          <text x="138" y="171" font-size="6" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">GÖLMARMARA</text>
+          <text x="112" y="210" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">AHMETLİ</text>
+          <text x="90" y="243" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">TURGUTLU</text>
+          <text x="176" y="207" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">SALİHLİ</text>
+          <text x="192" y="160" font-size="6.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">KÖPRÜBAŞI</text>
+          <text x="244" y="200" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">KULA</text>
+          <text x="203" y="265" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">ALAŞEHİR</text>
+          <text x="247" y="281" font-size="7.5" fill="#fff" text-anchor="middle" font-weight="600" font-family="DM Sans,sans-serif">SARIGÖL</text>
         </g>
       </svg>
+      <div id="mapLegend" class="map-legend" style="display:none"></div>
     </div>
+  </div>
 
-    <div class="panel">
-      <div class="panel-tab">
-        <button class="ptab active" onclick="switchTab('renk',this)">Renkler</button>
-        <button class="ptab" onclick="switchTab('ilce',this)">İlçeler</button>
-        <button class="ptab" onclick="switchTab('lejant',this)">Lejant</button>
-      </div>
-      <div class="panel-body">
-
-        <div id="tab-renk">
-          <div class="sec-label">Aktif renk</div>
-          <div class="color-grid" id="colorGrid"></div>
-          <div class="sec-label">Özel renk</div>
-          <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">
-            <input type="color" id="customColor" value="#E24B4A" style="width:36px;height:28px;padding:1px;border:0.5px solid var(--color-border-secondary);border-radius:6px;cursor:pointer;background:var(--color-background-primary)">
-            <button class="tbtn" style="font-size:11px" onclick="useCustomColor()">Bunu seç</button>
-          </div>
-          <button class="reset-btn" onclick="resetAll()">Tüm renkleri sıfırla</button>
-          <div class="tip">Renk seç → ilçeye tıkla veya İlçeler sekmesinden seç</div>
-        </div>
-
-        <div id="tab-ilce" style="display:none">
-          <div class="sec-label">İlçe listesi</div>
-          <div class="dist-list" id="districtList"></div>
-        </div>
-
-        <div id="tab-lejant" style="display:none">
-          <div class="sec-label">Lejant öğeleri</div>
-          <div class="legend-list" id="legendList"></div>
-          <div class="add-legend-row">
-            <input class="add-legend-input" id="legendLabelInput" type="text" placeholder="Açıklama yaz...">
-            <button class="add-legend-btn" onclick="addLegendItem()">+ Ekle</button>
-          </div>
-          <div class="tip" style="margin-top:6px">Aktif rengi seç → Ekle ile lejanta ekle</div>
-          <div class="legend-preview" id="legendPreview" style="display:none">
-            <div class="legend-preview-title" id="legendPreviewTitle">Lejant</div>
-            <div id="legendPreviewItems" style="display:flex;flex-direction:column;gap:5px"></div>
-          </div>
-        </div>
-
-      </div>
+  <!-- SIDE PANEL (desktop) -->
+  <div class="side-panel">
+    <div class="panel-tabs">
+      <button class="ptab active" onclick="switchTab('renk',this,false)">Renk</button>
+      <button class="ptab" onclick="switchTab('ilce',this,false)">İlçeler</button>
+      <button class="ptab" onclick="switchTab('lejant',this,false)">Lejant</button>
+    </div>
+    <div class="panel-body" id="desktopPanelBody">
+      <!-- injected by JS -->
     </div>
   </div>
 </div>
 
+<!-- BOTTOM NAV (mobile) -->
+<div class="bottom-nav">
+  <div class="bottom-nav-tabs">
+    <button class="bnav-tab active" onclick="openSheet('renk',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
+      Renk
+    </button>
+    <button class="bnav-tab" onclick="openSheet('ilce',this)">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      İlçeler
+    </button>
+    <button class="bnav-tab" onclick="openSheet('lejant',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Lejant
+    </button>
+  </div>
+</div>
+
+<!-- MOBILE SHEET -->
+<div class="mobile-sheet" id="mobileSheet">
+  <div class="sheet-handle" onclick="closeSheet()"></div>
+  <div class="sheet-body" id="mobileSheetBody">
+    <!-- injected by JS -->
+  </div>
+</div>
+
 <script>
-const COLORS=['#E24B4A','#E8753A','#F0B429','#4CAF50','#2196F3','#9C27B0','#00BCD4','#FF69B4','#795548','#607D8B','#1B5E20','#0D47A1','#FFEB3B','#69F0AE','#aaaaaa','#ffffff'];
+const COLORS=[
+  '#6c63ff','#4361ee','#3a0ca3','#7209b7','#b5179e','#f72585',
+  '#ff6584','#ff4757','#ff6348','#ffa502','#eccc68','#2ed573',
+  '#1e90ff','#00cec9','#fdcb6e','#636e72',
+  '#ffffff','#b2bec3','#636e72','#2d3436'
+];
+
 const DISTRICTS=[
   {id:'akhisar',name:'AKHİSAR'},{id:'demirci',name:'DEMİRCİ'},{id:'selendi',name:'SELENDİ'},
   {id:'gordes',name:'GÖRDES'},{id:'kirkagac',name:'KIRKAĞAÇ'},{id:'soma',name:'SOMA'},
@@ -155,140 +486,306 @@ const DISTRICTS=[
   {id:'alasehir',name:'ALAŞEHİR'},{id:'sarigol',name:'SARIGÖL'}
 ];
 
-let selectedColor=COLORS[0];
-let districtColors={};
-let labelsVisible=true;
-let bordersVisible=true;
-let legendItems=[];
+let selectedColor = COLORS[0];
+let districtColors = {};
+let legendItems = []; // [{id, color, label}]
+let legendIdCounter = 0;
+let activePicker = null; // {legendId, el}
+let currentTab = 'renk';
+let sheetOpen = false;
 
-const colorGrid=document.getElementById('colorGrid');
-const districtList=document.getElementById('districtList');
+// title
+const mapTitleInput = document.getElementById('mapTitle');
+const mapTitleDisplay = document.getElementById('mapTitleDisplay');
+mapTitleInput.oninput = () => { mapTitleDisplay.innerText = mapTitleInput.value; };
+mapTitleDisplay.innerText = mapTitleInput.value;
 
-COLORS.forEach((c,i)=>{
-  const btn=document.createElement('div');
-  btn.className='cbtn'+(i===0?' active':'');
-  btn.style.background=c;
-  if(c==='#ffffff')btn.style.border='2px solid #ccc';
-  btn.onclick=()=>{
-    document.querySelectorAll('.cbtn').forEach(b=>{b.classList.remove('active');if(b.style.background!=='rgb(255,255,255)')b.style.borderColor='transparent';});
-    btn.classList.add('active');btn.style.borderColor='#333';
-    selectedColor=c;
-    document.getElementById('customColor').value=c;
+// map click
+document.querySelectorAll('.ilce-path').forEach(p => {
+  p.onclick = () => {
+    p.setAttribute('fill', selectedColor);
+    districtColors[p.id] = selectedColor;
+    renderPanel();
   };
-  colorGrid.appendChild(btn);
 });
 
-document.getElementById('customColor').oninput=e=>{
-  selectedColor=e.target.value;
-  document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('active'));
-};
+// ── PANEL CONTENT BUILDERS ──
 
-function useCustomColor(){
-  selectedColor=document.getElementById('customColor').value;
+function buildRenkHTML(){
+  return `
+    <div class="sec-label">Palet</div>
+    <div class="color-grid" id="paletGrid">
+      ${COLORS.map(c=>`<div class="cbtn${c===selectedColor?' active':''}" style="background:${c}" data-c="${c}" onclick="selectColor('${c}',this)"></div>`).join('')}
+    </div>
+    <div class="sec-label">Özel Renk</div>
+    <div class="custom-row">
+      <input type="color" id="customColorPicker" value="${selectedColor}" oninput="onCustomColorInput(this)"/>
+      <span class="hex-val" id="hexDisplay">${selectedColor.toUpperCase()}</span>
+      <button class="use-custom-btn" id="useCustomBtn" onclick="applyCustomColor()">Uygula</button>
+    </div>
+  `;
+}
+
+function buildIlceHTML(){
+  return `<div class="dist-list">${DISTRICTS.map(d=>{
+    const c = districtColors[d.id]||'#555568';
+    return `<div class="ditem" onclick="paintDistrict('${d.id}')">
+      <div class="ditem-swatch" style="background:${c}"></div>
+      <span class="ditem-name">${d.name}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function buildLejantHTML(){
+  const items = legendItems.map(item=>`
+    <div class="legend-item" data-id="${item.id}">
+      <div class="legend-swatch" style="background:${item.color}" onclick="openSwatchPicker(${item.id},this)" title="Renk değiştir"></div>
+      <input class="legend-label-input" type="text" value="${item.label}" placeholder="Kategori adı..." 
+        onchange="updateLegendLabel(${item.id},this.value)" oninput="updateLegendLabel(${item.id},this.value)"/>
+      <button class="legend-del" onclick="deleteLegendItem(${item.id})" title="Sil">✕</button>
+    </div>
+  `).join('');
+
+  const preview = legendItems.length ? `
+    <div class="legend-preview-label">Harita Önizlemesi</div>
+    <div class="legend-preview">
+      ${legendItems.map(i=>`
+        <div class="legend-preview-item">
+          <div class="legend-preview-swatch" style="background:${i.color}"></div>
+          ${i.label||'—'}
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  return `
+    <div class="legend-items">${items}</div>
+    <div class="legend-add-row">
+      <input class="legend-new-label" type="text" id="newLegendLabel" placeholder="Yeni kategori adı..." 
+        onkeydown="if(event.key==='Enter')addLegend()"/>
+      <button class="legend-add-btn" onclick="addLegend()">+ Lejant Ekle</button>
+    </div>
+    ${preview}
+  `;
+}
+
+function renderPanel(){
+  const desktop = document.getElementById('desktopPanelBody');
+  const mobile = document.getElementById('mobileSheetBody');
+  let html = '';
+  if(currentTab==='renk') html = buildRenkHTML();
+  else if(currentTab==='ilce') html = buildIlceHTML();
+  else html = buildLejantHTML();
+  desktop.innerHTML = html;
+  mobile.innerHTML = html;
+}
+
+function switchTab(tab, btn, isMobile){
+  currentTab = tab;
+  // desktop tabs
+  document.querySelectorAll('.panel-tabs .ptab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel-tabs .ptab').forEach(b=>{ if(b.textContent.toLowerCase().includes(tab==='renk'?'renk':tab==='ilce'?'i̇lçe':tab)) b.classList.add('active'); });
+  renderPanel();
+}
+
+// ── COLORS ──
+function selectColor(c, el){
+  selectedColor = c;
+  // update active state in both panels
+  document.querySelectorAll('.cbtn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.c===c);
+  });
+  document.querySelectorAll('#hexDisplay').forEach(el=>el.textContent=c.toUpperCase());
+  const pickers = document.querySelectorAll('#customColorPicker');
+  pickers.forEach(p=>p.value=c);
+}
+
+function onCustomColorInput(input){
+  const c = input.value;
+  document.querySelectorAll('#hexDisplay').forEach(el=>el.textContent=c.toUpperCase());
+}
+
+function applyCustomColor(){
+  const pickers = document.querySelectorAll('#customColorPicker');
+  const c = pickers[0] ? pickers[0].value : selectedColor;
+  selectedColor = c;
+  document.querySelectorAll('#hexDisplay').forEach(el=>el.textContent=c.toUpperCase());
   document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('active'));
 }
 
-function setDistrictColor(id,color){
-  districtColors[id]=color;
-  const p=document.getElementById(id);
-  if(p)p.setAttribute('fill',color);
-  buildDistrictList();
+function paintDistrict(id){
+  const el = document.getElementById(id);
+  if(el){ el.setAttribute('fill', selectedColor); districtColors[id]=selectedColor; }
+  renderPanel();
 }
 
-function buildDistrictList(){
-  districtList.innerHTML='';
-  DISTRICTS.forEach(d=>{
-    const item=document.createElement('div');
-    item.className='ditem';
-    const col=districtColors[d.id]||'#aaa';
-    item.innerHTML=`<div class="ddot" style="background:${col}"></div><span class="d-name" style="font-size:11px">${d.name}</span>`;
-    item.onclick=()=>setDistrictColor(d.id,selectedColor);
-    districtList.appendChild(item);
+// ── LEGEND ──
+function addLegend(){
+  const inputs = document.querySelectorAll('#newLegendLabel');
+  const label = inputs[0] ? inputs[0].value.trim() : '';
+  legendItems.push({id:++legendIdCounter, color:selectedColor, label: label||'Kategori '+(legendIdCounter)});
+  updateMapLegend();
+  renderPanel();
+}
+
+function deleteLegendItem(id){
+  legendItems = legendItems.filter(i=>i.id!==id);
+  updateMapLegend();
+  renderPanel();
+}
+
+function updateLegendLabel(id, val){
+  const item = legendItems.find(i=>i.id===id);
+  if(item){ item.label=val; updateMapLegend(); }
+  // update preview inside same render without full re-render
+  const previews = document.querySelectorAll('.legend-preview');
+  previews.forEach(p=>{
+    p.innerHTML = legendItems.map(i=>`
+      <div class="legend-preview-item">
+        <div class="legend-preview-swatch" style="background:${i.color}"></div>
+        ${i.label||'—'}
+      </div>
+    `).join('');
   });
 }
 
-function resetAll(){
-  districtColors={};
-  DISTRICTS.forEach(d=>{
-    const p=document.getElementById(d.id);
-    if(p)p.setAttribute('fill','#aaa');
-  });
-  buildDistrictList();
+// Swatch color picker (popover)
+function openSwatchPicker(legendId, swatchEl){
+  // close if same
+  const existing = document.getElementById('swatchPopover');
+  if(existing){ existing.remove(); activePicker=null; if(activePicker && activePicker.legendId===legendId) return; }
+
+  activePicker = {legendId};
+  const pop = document.createElement('div');
+  pop.className='swatch-picker';
+  pop.id='swatchPopover';
+
+  const item = legendItems.find(i=>i.id===legendId);
+  const curColor = item ? item.color : '#ffffff';
+
+  pop.innerHTML=`
+    <div class="swatch-picker-grid">
+      ${COLORS.map(c=>`<div class="swatch-cbtn${c===curColor?' active':''}" style="background:${c}" onclick="applySwatchColor(${legendId},'${c}',this)"></div>`).join('')}
+    </div>
+    <div class="swatch-custom-row">
+      <input type="color" value="${curColor}" id="swatchCustom" oninput="onSwatchCustom(${legendId},this)"/>
+      <button class="swatch-apply" onclick="applySwatchCustom(${legendId})">Uygula</button>
+    </div>
+  `;
+
+  // position
+  const rect = swatchEl.getBoundingClientRect();
+  pop.style.position='fixed';
+  pop.style.left = Math.min(rect.left, window.innerWidth-210)+'px';
+  pop.style.top = (rect.bottom+6)+'px';
+  document.body.appendChild(pop);
+
+  // close on outside click
+  setTimeout(()=>{
+    document.addEventListener('click', function handler(e){
+      if(!pop.contains(e.target) && e.target!==swatchEl){
+        pop.remove(); activePicker=null;
+        document.removeEventListener('click',handler);
+      }
+    });
+  },10);
 }
 
+function applySwatchColor(legendId, color, el){
+  const item = legendItems.find(i=>i.id===legendId);
+  if(item){ item.color=color; }
+  updateMapLegend();
+  const pop = document.getElementById('swatchPopover');
+  if(pop){ pop.querySelectorAll('.swatch-cbtn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+  // update swatch el in list
+  renderPanel();
+  // reopen same position trick: just re-render & close
+  const p2 = document.getElementById('swatchPopover');
+  if(p2) p2.remove();
+}
+
+function onSwatchCustom(legendId, input){
+  // just update input, apply on button
+}
+function applySwatchCustom(legendId){
+  const input = document.getElementById('swatchCustom');
+  if(!input) return;
+  const item = legendItems.find(i=>i.id===legendId);
+  if(item){ item.color=input.value; }
+  updateMapLegend();
+  const p = document.getElementById('swatchPopover');
+  if(p) p.remove();
+  renderPanel();
+}
+
+function updateMapLegend(){
+  const leg = document.getElementById('mapLegend');
+  if(legendItems.length===0){ leg.style.display='none'; leg.innerHTML=''; return; }
+  leg.style.display='flex';
+  leg.innerHTML = legendItems.map(i=>`
+    <div class="map-legend-item">
+      <div class="map-legend-swatch" style="background:${i.color}"></div>
+      ${i.label||'—'}
+    </div>
+  `).join('');
+}
+
+// ── TOGGLES ──
 function toggleLabels(){
-  labelsVisible=!labelsVisible;
-  document.getElementById('labelsGroup').style.display=labelsVisible?'block':'none';
-  document.getElementById('btnLabels').classList.toggle('active',labelsVisible);
+  const g = document.getElementById('labelsGroup');
+  const vis = g.style.display!=='none';
+  g.style.display = vis?'none':'block';
+  document.getElementById('btnLabels').classList.toggle('active',!vis);
 }
-
 function toggleBorders(){
-  bordersVisible=!bordersVisible;
-  document.querySelectorAll('.ilce-path').forEach(p=>{
-    p.setAttribute('stroke-width',bordersVisible?'1':'0');
-  });
-  document.getElementById('btnBorder').classList.toggle('active',bordersVisible);
+  const paths = document.querySelectorAll('.ilce-path');
+  const cur = paths[0].getAttribute('stroke-width');
+  const next = cur==='1'?'0':'1';
+  paths.forEach(p=>p.setAttribute('stroke-width',next));
+  document.getElementById('btnBorder').classList.toggle('active',next==='1');
 }
 
-document.getElementById('mapTitle').oninput=e=>{
-  document.getElementById('mapTitleDisplay').textContent=e.target.value;
-};
-document.getElementById('mapTitleDisplay').textContent=document.getElementById('mapTitle').value;
+// ── MOBILE SHEET ──
+function openSheet(tab, btn){
+  // nav active
+  document.querySelectorAll('.bnav-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
 
-document.querySelectorAll('.ilce-path').forEach(p=>{
-  p.onclick=()=>setDistrictColor(p.id,selectedColor);
+  if(sheetOpen && currentTab===tab){ closeSheet(); return; }
+  currentTab = tab;
+  renderPanel();
+  const sheet = document.getElementById('mobileSheet');
+  sheet.classList.add('open');
+  sheetOpen = true;
+}
+function closeSheet(){
+  document.getElementById('mobileSheet').classList.remove('open');
+  sheetOpen = false;
+}
+// close sheet on map tap
+document.querySelector('.map-wrap').addEventListener('click', e=>{
+  if(sheetOpen && !e.target.closest('.ilce-path') && e.target.tagName!=='path') closeSheet();
 });
 
-function switchTab(name,btn){
-  ['renk','ilce','lejant'].forEach(t=>{
-    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
-  });
-  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  if(name==='ilce')buildDistrictList();
-}
-
-function addLegendItem(){
-  const lbl=document.getElementById('legendLabelInput').value.trim()||'Kategori';
-  legendItems.push({color:selectedColor,label:lbl});
-  document.getElementById('legendLabelInput').value='';
-  buildLegend();
-}
-
-function buildLegend(){
-  const list=document.getElementById('legendList');
-  const preview=document.getElementById('legendPreview');
-  const previewItems=document.getElementById('legendPreviewItems');
-  list.innerHTML='';
-  previewItems.innerHTML='';
-  if(legendItems.length===0){preview.style.display='none';return;}
-  preview.style.display='block';
-  legendItems.forEach((item,i)=>{
-    const row=document.createElement('div');
-    row.className='legend-item';
-    row.innerHTML=`<div class="legend-swatch" style="background:${item.color}"></div><input class="legend-input" value="${item.label}" oninput="legendItems[${i}].label=this.value;rebuildPreview()"><span class="legend-del" onclick="legendItems.splice(${i},1);buildLegend()">×</span>`;
-    list.appendChild(row);
-    const prow=document.createElement('div');
-    prow.style.cssText='display:flex;align-items:center;gap:6px';
-    prow.innerHTML=`<div style="width:12px;height:12px;border-radius:3px;background:${item.color};flex-shrink:0;border:1px solid rgba(128,128,128,0.2)"></div><span style="font-size:11px;color:var(--color-text-primary)">${item.label}</span>`;
-    previewItems.appendChild(prow);
-  });
-  const titleEl=document.getElementById('legendPreviewTitle');
-  titleEl.textContent=document.getElementById('mapTitle').value||'Lejant';
-}
-
-function rebuildPreview(){
-  const previewItems=document.getElementById('legendPreviewItems');
-  previewItems.innerHTML='';
-  legendItems.forEach(item=>{
-    const prow=document.createElement('div');
-    prow.style.cssText='display:flex;align-items:center;gap:6px';
-    prow.innerHTML=`<div style="width:12px;height:12px;border-radius:3px;background:${item.color};flex-shrink:0;border:1px solid rgba(128,128,128,0.2)"></div><span style="font-size:11px;color:var(--color-text-primary)">${item.label}</span>`;
-    previewItems.appendChild(prow);
+// ── DOWNLOAD ──
+function downloadMap(){
+  const area = document.getElementById('export-area');
+  html2canvas(area,{backgroundColor:'#ffffff',scale:3,logging:false}).then(c=>{
+    const a=document.createElement('a');
+    a.download='manisa-harita.png';
+    a.href=c.toDataURL('image/png');
+    a.click();
   });
 }
 
-buildDistrictList();
-document.getElementById('btnLabels').classList.add('active');
-document.getElementById('btnBorder').classList.add('active');
+// ── INIT ──
+// sync desktop tabs click
+document.querySelectorAll('.panel-tabs .ptab').forEach((btn,i)=>{
+  const tabs=['renk','ilce','lejant'];
+  btn.onclick=()=>switchTab(tabs[i],btn,false);
+});
+
+renderPanel();
 </script>
+</body>
+</html>
